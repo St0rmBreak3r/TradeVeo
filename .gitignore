@@ -1,0 +1,14 @@
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+tmp_diag_output/
+tmp_diag_console.txt
+.env
+.env.*
+*.log
+*.sqlite
+*.sqlite3
+dist/
