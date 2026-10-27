@@ -1,16 +1,16 @@
-# TRYEDVEO Milestone 1 Implementation Plan
+# Tradeveo Milestone 1 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Deliver a usable local TRYEDVEO trading journal with SQLite persistence, trade CRUD, accurate currency-aware analytics, calendar, validated CSV exchange, and recoverable backup/restore.
+**Goal:** Deliver a usable local Tradeveo trading journal with SQLite persistence, trade CRUD, accurate currency-aware analytics, calendar, validated CSV exchange, and recoverable backup/restore.
 
-**Architecture:** A Vite React + TypeScript frontend is served locally and talks to a FastAPI backend on 127.0.0.1. FastAPI validates requests and owns SQLite persistence, analytics, CSV, and backups; the database lives below `%LOCALAPPDATA%\TRYEDVEO`, not in the repository or web build. AI adapters and provider configuration are deliberately deferred to a separately implemented Milestone 2.
+**Architecture:** A Vite React + TypeScript frontend is served locally and talks to a FastAPI backend on 127.0.0.1. FastAPI validates requests and owns SQLite persistence, analytics, CSV, and backups; the database lives below `%LOCALAPPDATA%\Tradeveo`, not in the repository or web build. AI adapters and provider configuration are deliberately deferred to a separately implemented Milestone 2.
 
 **Tech Stack:** Python 3.14 available on the target machine; FastAPI, Pydantic, SQLAlchemy 2, Alembic, pytest, SQLite; Node.js 24 and npm available; React, TypeScript, Vite, Vitest, React Testing Library, Playwright for browser acceptance. Pin mutually compatible dependency versions in the project manifests/lockfiles during the bootstrap task and preserve locks thereafter. Provide a development-mode startup command and a production mode that serves prebuilt frontend assets from FastAPI.
 
 ## Global Constraints
 
-- Product name is `TRYEDVEO`.
+- Product name is `Tradeveo`.
 - Initial runtime is a local Windows web app, accessible in a browser on the same PC.
 - Backend binds to loopback `127.0.0.1` only by default.
 - Journal works offline and without AI credentials.
@@ -20,16 +20,16 @@
 - Do not implement broker connections, market feeds, order execution, cloud sync, billing, or AI providers in Milestone 1.
 - Keep database files, backups, user CSVs, and any future secrets out of source control and frontend public/build assets.
 - Mutation routes must require a browser `Origin` matching the configured local UI origin and reject `Sec-Fetch-Site: cross-site`; accept only loopback Host names (`localhost` or `127.0.0.1`), bind the API to `127.0.0.1`, and configure no permissive CORS. Missing/mismatched Origin or cross-site fetch metadata is rejected.
-- `TRYEDVEO_TIMEZONE` is an IANA timezone setting used for local calendar grouping and defaults to the operating system timezone resolved with the `tzlocal` package; analytics date filters apply to `closed_at` (UTC instant) and journal-list `from`/`to` filters apply to `opened_at`.
-- No commit is required by this plan; the shared Git root has unrelated user changes. If a future user explicitly asks to commit, stage only files inside `TrydeVeo` after reviewing status.
-- Follow the approved design spec: `docs/superpowers/specs/2026-10-21-tryedveo-design.md`.
+- `Tradeveo_TIMEZONE` is an IANA timezone setting used for local calendar grouping and defaults to the operating system timezone resolved with the `tzlocal` package; analytics date filters apply to `closed_at` (UTC instant) and journal-list `from`/`to` filters apply to `opened_at`.
+- No commit is required by this plan; the shared Git root has unrelated user changes. If a future user explicitly asks to commit, stage only files inside `Tradeveo` after reviewing status.
+- Follow the approved design spec: `docs/superpowers/specs/2026-10-21-tradeveo-design.md`.
 
 ---
 
 ## Project file map
 
 ```text
-TrydeVeo/
+Tradeveo/
   .gitignore
   README.md
   pyproject.toml
@@ -149,7 +149,7 @@ Canonical CSV columns, in order:
 
 ### Backup interfaces
 
-- `POST /api/backups` creates a versioned ZIP archive under `%LOCALAPPDATA%\TRYEDVEO\backups\tryedveo-<UTC timestamp>-<UUID>.zip` containing `manifest.json` (`format_version`, `schema_version`, `created_at`, `trade_count`) and a consistent SQLite snapshot `journal.sqlite3`; response includes opaque backup id, timestamp, and byte size, never arbitrary filesystem paths supplied by client.
+- `POST /api/backups` creates a versioned ZIP archive under `%LOCALAPPDATA%\Tradeveo\backups\tradeveo-<UTC timestamp>-<UUID>.zip` containing `manifest.json` (`format_version`, `schema_version`, `created_at`, `trade_count`) and a consistent SQLite snapshot `journal.sqlite3`; response includes opaque backup id, timestamp, and byte size, never arbitrary filesystem paths supplied by client.
 - `GET /api/backups` lists app-managed backup ids and manifest metadata only.
 - `POST /api/backups/restore` accepts `{ "backup_id": "<UUID>", "confirm": true }`; reject if false, verify archive member allowlist and size limits, manifest versions, SQLite schema, and `PRAGMA integrity_check`; create an automatic pre-restore ZIP snapshot; atomically replace database with rollback-safe filesystem swap, reconnect engine, and return restored trade count and pre-restore backup id.
 - No route accepts caller-selected arbitrary filesystem paths.
@@ -163,10 +163,10 @@ Canonical CSV columns, in order:
 - `GET /api/health -> { "status": "ok", "schema_version": "0001" }` after migrations.
 - Vite serves React in development; production build is served by FastAPI from a dedicated frontend build directory. Backend listens on 127.0.0.1 only.
 
-- [ ] **Step 1: Define failing startup tests** in `backend/tests/test_health.py` for app health, loopback default config, and CORS/origin behavior; add frontend smoke test that renders “TRYEDVEO”.
+- [ ] **Step 1: Define failing startup tests** in `backend/tests/test_health.py` for app health, loopback default config, and CORS/origin behavior; add frontend smoke test that renders “Tradeveo”.
 - [ ] **Step 2: Run focused tests** with `python -m pytest backend/tests/test_health.py -q` and `npm test -- --run`; expect failure until setup exists.
 - [ ] **Step 3: Add pinned dependency manifests** with a compatible FastAPI/Pydantic/SQLAlchemy/Alembic/pytest/tzlocal stack and React/TypeScript/Vite/Vitest/Playwright; create lockfile with `npm install --package-lock-only` and verify `python -m pip install -e ".[dev]"` in the project-local environment.
-- [ ] **Step 4: Implement app factory, runtime config, database path, health route, minimal responsive shell, Vite dev proxy, production static mounting, and Windows scripts.** Use `%LOCALAPPDATA%\TRYEDVEO\journal.sqlite3`; never default database to project root. `start.bat` starts the backend at `127.0.0.1:8000` and frontend dev server at `127.0.0.1:5173` for development; production start serves compiled assets from backend. Do not background a shell child process in tests.
+- [ ] **Step 4: Implement app factory, runtime config, database path, health route, minimal responsive shell, Vite dev proxy, production static mounting, and Windows scripts.** Use `%LOCALAPPDATA%\Tradeveo\journal.sqlite3`; never default database to project root. `start.bat` starts the backend at `127.0.0.1:8000` and frontend dev server at `127.0.0.1:5173` for development; production start serves compiled assets from backend. Do not background a shell child process in tests.
 - [ ] **Step 5: Verify bootstrap** with `python -m pytest backend/tests/test_health.py -q`, `npm ci`, `npm test -- --run`, `npm run typecheck`, and `npm run build`; inspect `backend` and `dist` to assert the SQLite file is not in either tree. `pyproject.toml` configures pytest `testpaths = ["backend/tests"]` and the setuptools package root so `python -m pytest -q` imports `backend/app` consistently.
 
 ## Task 2: Trade schema, migration, validation, CRUD, and P&L
@@ -184,13 +184,13 @@ Canonical CSV columns, in order:
 
 ## Task 3: Currency-separated analytics and calendar
 
-**Files:** Create `backend/app/services/analytics.py`, `backend/app/api/analytics.py`, `backend/tests/test_analytics.py`; modify app router wiring and `backend/app/config.py` for `TRYEDVEO_TIMEZONE`.
+**Files:** Create `backend/app/services/analytics.py`, `backend/app/api/analytics.py`, `backend/tests/test_analytics.py`; modify app router wiring and `backend/app/config.py` for `Tradeveo_TIMEZONE`.
 
 **Interfaces:** Consume validated trade records and filters. Produce summary and calendar response shapes defined above. `build_summary(session, filters) -> SummaryRead`; `build_calendar(session, year, month, currency=None, instrument=None, market=None, strategy=None) -> CalendarRead`.
 
 - [ ] **Step 1: Write tests** covering two currencies, open positions excluded from closed totals, exact win/loss/breakeven counts, win rate, averages, null profit factor when no losses, realized override, date filters using close timestamps, summary and calendar instrument/market/strategy filters, deterministic equity order for equal timestamps, leap-year/month bounds, operating-system timezone/DST conversion, and a day containing multiple currencies.
 - [ ] **Step 2: Run focused tests and confirm expected missing endpoint/service failures.**
-- [ ] **Step 3: Implement analytics with Decimal accumulation in Python; group all metrics/equity/day totals by currency. Analytics date filters compare `closed_at` UTC instants; calendar converts `closed_at` into the configured `TRYEDVEO_TIMEZONE` before grouping by date. Define profit factor as positive net-P&L sum divided by absolute negative net-P&L sum, null when there are no losses; average loss is the signed (negative) arithmetic mean of losing net P&Ls.**
+- [ ] **Step 3: Implement analytics with Decimal accumulation in Python; group all metrics/equity/day totals by currency. Analytics date filters compare `closed_at` UTC instants; calendar converts `closed_at` into the configured `Tradeveo_TIMEZONE` before grouping by date. Define profit factor as positive net-P&L sum divided by absolute negative net-P&L sum, null when there are no losses; average loss is the signed (negative) arithmetic mean of losing net P&Ls.**
 - [ ] **Step 4: Implement routes and Pydantic output models.**
 - [ ] **Step 5: Verify exact fixture values by hand in assertions and run `python -m pytest backend/tests/test_analytics.py -q` and all backend tests.**
 
@@ -239,7 +239,7 @@ Canonical CSV columns, in order:
 - [ ] **Step 1: Write tests** for summaries per currency, null/zero-data states, open-count distinction, equity series ordering, month navigation, positive/negative/breakeven days across currencies, filter changes updating API arguments, accessible chart summary/table alternative, and responsive no-overflow layout.
 - [ ] **Step 2: Run tests and confirm expected failures.**
 - [ ] **Step 3: Implement compact dashboard cards and a purpose-built SVG equity timeline with axis labels and accessible textual/table summary. Do not add an unverified chart dependency.**
-- [ ] **Step 4: Implement month calendar with local date labels while consuming backend UTC-derived local date aggregation using configured `TRYEDVEO_TIMEZONE`; add a configuration helper and a test-fixed timezone.**
+- [ ] **Step 4: Implement month calendar with local date labels while consuming backend UTC-derived local date aggregation using configured `Tradeveo_TIMEZONE`; add a configuration helper and a test-fixed timezone.**
 - [ ] **Step 5: Verify currency cannot be visually or programmatically merged, then run frontend tests and typecheck.**
 
 ## Task 8: Import/export and backup user workflows
@@ -264,7 +264,7 @@ Canonical CSV columns, in order:
 - [ ] **Step 2: Write E2E scenario** creating two sample trades (one long USD win and one short EUR loss), verify dashboard shows distinct currency sections, edit a note, filter list, export CSV, import it into a clean test database, create backup, delete a trade, restore backup, and verify both records return.
 - [ ] **Step 3: Run full verification**: `python -m pytest -q`; `npm test -- --run`; `npm run typecheck`; `npm run build`; E2E against actual local UI. Preserve exit status for any output filtering. Test preview/no-mutation/commit by API and user flow; test backup/restore via the browser interface. Use the configured local test database rather than production user data.
 - [ ] **Step 4: Inspect browser console/network errors, responsive width at desktop and 375px mobile, keyboard navigation, focus visibility, reduced-motion setting, API listener loopback address, and frontend build for accidental database/secret files.**
-- [ ] **Step 5: Review `git status --short -- TrydeVeo` (or the corresponding exact root-relative path) only; leave unrelated parent-root changes untouched. Report any environment/setup blocker; do not call missing external AI integration a pass.**
+- [ ] **Step 5: Review `git status --short -- Tradeveo` (or the corresponding exact root-relative path) only; leave unrelated parent-root changes untouched. Report any environment/setup blocker; do not call missing external AI integration a pass.**
 
 ## Milestone 1 completion gate
 

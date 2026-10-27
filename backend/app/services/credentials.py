@@ -5,12 +5,13 @@ from typing import Literal
 
 from pydantic import SecretStr
 
-SERVICE_NAME = "TRYEDVEO"
+SERVICE_NAME = "Tradeveo"
+LEGACY_SERVICE_NAME = "TRYEDVEO"
 CredentialSource = Literal["environment", "credential_manager", "none"]
 PROVIDER_CREDENTIALS: dict[str, tuple[str, str]] = {
     "openai": ("OPENAI_API_KEY", "openai-api-key"),
     "anthropic": ("ANTHROPIC_API_KEY", "anthropic-api-key"),
-    "custom_openai_compatible": ("TRYEDVEO_CUSTOM_API_KEY", "custom-openai-compatible-api-key"),
+    "custom_openai_compatible": ("TRADEVEO_CUSTOM_API_KEY", "custom-openai-compatible-api-key"),
 }
 # Preserve the old constant for integrations/tests that import it.
 CREDENTIAL_USERNAME = "openai-api-key"
@@ -63,7 +64,16 @@ def read_saved_api_key(provider: str = "openai") -> str | None:
     if backend is None:
         return None
     try:
-        return backend.get_password(SERVICE_NAME, username)
+        saved = backend.get_password(SERVICE_NAME, username)
+        if saved:
+            return saved
+        legacy = backend.get_password(LEGACY_SERVICE_NAME, username)
+        if legacy:
+            try:
+                backend.set_password(SERVICE_NAME, username, legacy)
+            except Exception:
+                pass
+        return legacy
     except Exception:
         return None
 
@@ -81,9 +91,16 @@ def delete_saved_api_key(provider: str = "openai") -> None:
         raise RuntimeError("The saved API key could not be removed from Windows Credential Manager.") from exc
 
 
+def _environment_value(name: str) -> str:
+    value = os.environ.get(name, "").strip()
+    if value or not name.startswith("TRADEVEO_"):
+        return value
+    return os.environ.get(f"TRYEDVEO_{name.removeprefix('TRADEVEO_')}", "").strip()
+
+
 def resolve_api_key(provider: str = "openai") -> tuple[str | None, CredentialSource]:
     environment_name, _username = _provider_credential(provider)
-    environment_key = os.environ.get(environment_name, "").strip()
+    environment_key = _environment_value(environment_name)
     if environment_key:
         return environment_key, "environment"
     saved = read_saved_api_key(provider)

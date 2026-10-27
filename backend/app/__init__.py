@@ -1,1 +1,1 @@
-"""TRYEDVEO local application backend."""
+"""Tradeveo local application backend."""

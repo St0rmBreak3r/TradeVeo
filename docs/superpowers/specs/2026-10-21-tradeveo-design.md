@@ -1,12 +1,12 @@
-# TRYEDVEO — Product and Architecture Design
+# Tradeveo — Product and Architecture Design
 
 **Date:** 2026-10-21  
 **Status:** Approved by user  
-**Product name:** TRYEDVEO
+**Product name:** Tradeveo
 
 ## Product goal
 
-TRYEDVEO is a private, local-first trading journal and review workspace for an individual trader. Its first release supports manual trade entry and CSV exchange, reliable trade history, calendar and performance review, local backups, and optional user-directed AI analysis. It does not place orders or claim to be an investment adviser.
+Tradeveo is a private, local-first trading journal and review workspace for an individual trader. Its first release supports manual trade entry and CSV exchange, reliable trade history, calendar and performance review, local backups, and optional user-directed AI analysis. It does not place orders or claim to be an investment adviser.
 
 ## Confirmed user decisions
 
@@ -119,7 +119,7 @@ Exact schemas and route names are locked in the Milestone 1 plan and tests; the 
 
 ### Milestone 1 acceptance
 
-1. From the documented Windows setup/start command, a user can open TRYEDVEO in a browser and create a local journal without accounts or internet access.
+1. From the documented Windows setup/start command, a user can open Tradeveo in a browser and create a local journal without accounts or internet access.
 2. Trade create/read/update/delete works across app restarts with validation and clear errors.
 3. Hand-calculated long and short test examples (including fees, multipliers, override, open positions, and multiple currencies) match server analytics exactly using decimal-safe math.
 4. Dashboard, journal filters, calendar, and analytics reflect the same persisted records; no cross-currency summing occurs.

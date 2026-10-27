@@ -374,7 +374,7 @@ export function SettingsPage() {
               {provider === 'openai' ? 'OpenAI processing and retention follow its current API data controls.' :
                provider === 'anthropic' ? 'Anthropic processing and retention follow its current API data controls.' :
                'Custom provider processing and retention follow its current API data controls.'}
-              TradeVeo does not save chart images or analysis history.
+              Tradeveo does not save chart images or analysis history.
               Removing a saved key does not remove an environment-configured key.
             </p>
           </>

@@ -10,7 +10,7 @@ from backend.app.models import Base
 
 def make_engine(database_url: str) -> Engine:
     if not database_url.startswith("sqlite:///"):
-        raise ValueError("TRYEDVEO currently supports a local SQLite database only.")
+        raise ValueError("Tradeveo currently supports a local SQLite database only.")
     if database_url != "sqlite:///:memory:":
         db_path = Path(database_url.removeprefix("sqlite:///"))
         db_path.parent.mkdir(parents=True, exist_ok=True)

@@ -18,6 +18,8 @@ from sqlalchemy.orm import sessionmaker
 from backend.app.config import backup_directory
 
 FORMAT_VERSION = 1
+ARCHIVE_PREFIX = "tradeveo"
+LEGACY_ARCHIVE_PREFIX = "tryedveo"
 MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
 MAX_DATABASE_BYTES = 1024 * 1024 * 1024
 
@@ -48,7 +50,7 @@ def create_backup(database_url: str, engine: Engine | None = None) -> dict[str, 
     directory = backup_directory()
     directory.mkdir(parents=True, exist_ok=True)
     backup_id = str(uuid.uuid4())
-    target = directory / f"tryedveo-{backup_id}.zip"
+    target = directory / f"{ARCHIVE_PREFIX}-{backup_id}.zip"
     with tempfile.TemporaryDirectory(dir=directory) as temporary:
         snapshot = Path(temporary) / "journal.sqlite3"
         if engine is not None:
@@ -72,9 +74,14 @@ def list_backups() -> list[dict[str, Any]]:
     if not directory.exists():
         return []
     results = []
-    for archive_path in directory.glob("tryedveo-*.zip"):
+    archives = list(directory.glob(f"{ARCHIVE_PREFIX}-*.zip")) + list(directory.glob(f"{LEGACY_ARCHIVE_PREFIX}-*.zip"))
+    for archive_path in archives:
         try:
-            backup_id = archive_path.stem.removeprefix("tryedveo-")
+            backup_id = archive_path.stem
+            for prefix in (f"{ARCHIVE_PREFIX}-", f"{LEGACY_ARCHIVE_PREFIX}-"):
+                if backup_id.startswith(prefix):
+                    backup_id = backup_id.removeprefix(prefix)
+                    break
             uuid.UUID(backup_id)
             with zipfile.ZipFile(archive_path) as archive:
                 manifest = json.loads(archive.read("manifest.json"))
@@ -93,7 +100,10 @@ def restore_backup(backup_id: str, confirm: bool, database_url: str, engine: Eng
         safe_id = str(uuid.UUID(backup_id))
     except ValueError as exc:
         raise ValueError("Invalid backup identifier.") from exc
-    archive_path = backup_directory() / f"tryedveo-{safe_id}.zip"
+    directory = backup_directory()
+    archive_path = directory / f"{ARCHIVE_PREFIX}-{safe_id}.zip"
+    if not archive_path.is_file():
+        archive_path = directory / f"{LEGACY_ARCHIVE_PREFIX}-{safe_id}.zip"
     if not archive_path.is_file() or archive_path.stat().st_size > MAX_ARCHIVE_BYTES:
         raise ValueError("Backup is missing or exceeds the allowed size.")
     with tempfile.TemporaryDirectory(dir=backup_directory()) as temporary:
@@ -132,7 +142,7 @@ def restore_backup(backup_id: str, confirm: bool, database_url: str, engine: Eng
                 raise ValueError("Restored journal count did not match the backup.")
         except Exception:
             if before:
-                restore_path = backup_directory() / f"tryedveo-{before['backup_id']}.zip"
+                restore_path = backup_directory() / f"{ARCHIVE_PREFIX}-{before['backup_id']}.zip"
                 rollback_db = temporary_path / "rollback.sqlite3"
                 with zipfile.ZipFile(restore_path) as rollback_archive, rollback_archive.open("journal.sqlite3") as source, rollback_db.open("wb") as destination_file:
                     while chunk := source.read(1024 * 1024):

@@ -3,9 +3,9 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tryedveo"
+name = "tradeveo"
 version = "0.1.0"
-description = "Local-first trading journal and analytics"
+description = "Local chart desk that reads a screenshot and returns an entry setup"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.115,<1.0",

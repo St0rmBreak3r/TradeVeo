@@ -42,7 +42,7 @@ def test_invalid_key_rejected_without_echo(monkeypatch):
 def test_provider_keys_have_separate_environment_and_credential_entries(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "claude-env-key")
-    monkeypatch.setenv("TRYEDVEO_CUSTOM_API_KEY", "custom-env-key")
+    monkeypatch.setenv("TRADEVEO_CUSTOM_API_KEY", "custom-env-key")
     saved = {"openai": "openai-saved", "anthropic": "claude-saved", "custom_openai_compatible": "custom-saved"}
     monkeypatch.setattr(credentials, "read_saved_api_key", lambda provider="openai": saved[provider])
     assert credentials.resolve_api_key() == ("openai-saved", "credential_manager")

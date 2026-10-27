@@ -14,7 +14,7 @@ export function AppShell({ children, onNavigate, theme, onToggleTheme }: { child
       <aside className="sidebar" aria-label="Main navigation">
         <a className="brand" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/'); }}>
           <span className="brand-mark" aria-hidden="true">T</span>
-          <span>TradeVeo<span className="brand-caption">ENTRY SETUPS</span></span>
+          <span>Tradeveo<span className="brand-caption">ENTRY SETUPS</span></span>
         </a>
         <p className="nav-label">WORKSPACE</p>
         <nav>

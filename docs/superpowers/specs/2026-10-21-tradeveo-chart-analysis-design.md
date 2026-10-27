@@ -1,12 +1,12 @@
-# TRYEDVEO — Chart-First Analysis Product Design
+# Tradeveo — Chart-First Analysis Product Design
 
 **Date:** 2026-10-21  
 **Status:** Approved direction for spec drafting; awaiting user review before planning implementation  
-**Product:** TRYEDVEO
+**Product:** Tradeveo
 
 ## Goal and product priority
 
-TRYEDVEO's primary purpose is to accept a chart screenshot and return a grounded, structured trading setup or an explicit no-trade result. Trade journaling is secondary and must not dominate the home screen or block the chart-analysis journey. The initial app does not place orders, connect to a broker, or guarantee trading results.
+Tradeveo's primary purpose is to accept a chart screenshot and return a grounded, structured trading setup or an explicit no-trade result. Trade journaling is secondary and must not dominate the home screen or block the chart-analysis journey. The initial app does not place orders, connect to a broker, or guarantee trading results.
 
 ## Confirmed user decisions
 
@@ -26,10 +26,10 @@ TRYEDVEO's primary purpose is to accept a chart screenshot and return a grounded
 
 ## Primary user flow
 
-1. User opens TRYEDVEO and sees the chart-analysis workspace first.
+1. User opens Tradeveo and sees the chart-analysis workspace first.
 2. User pastes a copied screenshot, selects a PNG/JPEG, or drops a screenshot into the upload area.
 3. App validates file type, size, and decodability locally and shows a preview before analysis.
-4. App displays a concise disclosure: image will be sent to OpenAI, subject to OpenAI API handling/retention; TRYEDVEO will not save it after analysis.
+4. App displays a concise disclosure: image will be sent to OpenAI, subject to OpenAI API handling/retention; Tradeveo will not save it after analysis.
 5. User deliberately presses **Analyze chart**.
 6. Local FastAPI validates the request, reads the image in memory, sends it to a configured vision-capable OpenAI model, and validates the structured response.
 7. UI renders the direction/setup, grounded levels, reasoning, invalidation, and uncertainty. If no actionable grounded setup can be supported, show **NO TRADE** and the reason.
@@ -135,7 +135,7 @@ OpenAI Responses API + selected vision-capable model
 
 - Never make an unsolicited provider request; explicit analyze confirmation is mandatory.
 - Never call OpenAI from browser code, embed keys in the bundle, store keys in localStorage/sessionStorage/IndexedDB, or log secrets.
-- Do not claim a screenshot is never retained globally. Say TRYEDVEO does not save the image; OpenAI may handle/retain API data under its current published terms/settings.
+- Do not claim a screenshot is never retained globally. Say Tradeveo does not save the image; OpenAI may handle/retain API data under its current published terms/settings.
 - Never treat visual analysis as ground truth. A screenshot lacks tick data, spread, order book, event calendar, and unseen context. State these limitations in result and product copy.
 - A model “confidence” field is subjective text label only, not calibrated probability. Consider omitting it if evaluation reveals misleading behavior; report that as a design follow-up rather than showing false precision.
 - No live orders, trade execution, backtest, profit guarantee, or individualized suitability advice.
@@ -184,7 +184,7 @@ OpenAI Responses API + selected vision-capable model
 
 - [x] Product priority is corrected to screenshot-driven chart analysis, not journaling.
 - [x] User-confirmed primary input, output, provider, timeframe, and chart-structure limitations are explicit.
-- [x] User-approved explicit consent, no image persistence by TRYEDVEO, API-key handling, and environment fallback are specified.
+- [x] User-approved explicit consent, no image persistence by Tradeveo, API-key handling, and environment fallback are specified.
 - [x] Result contract distinguishes observations, inferences, no-trade, and uncalibrated confidence.
 - [x] OpenAI retention caveat avoids false no-retention promise.
 - [x] Existing journal preservation is explicit; no destructive migration is authorized.

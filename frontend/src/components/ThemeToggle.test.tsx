@@ -21,19 +21,19 @@ describe('theme preference', () => {
     expect(toggle).toHaveAttribute('aria-pressed', 'false');
     await user.click(toggle);
     expect(screen.getByTestId('theme')).toHaveTextContent('dark');
-    expect(localStorage.getItem('tryedveo-theme')).toBe('dark');
+    expect(localStorage.getItem('tradeveo-theme')).toBe('dark');
     expect(localStorage.length).toBe(1);
     await user.click(screen.getByRole('button', { name: 'Switch to light theme' }));
-    expect(localStorage.getItem('tryedveo-theme')).toBe('light');
+    expect(localStorage.getItem('tradeveo-theme')).toBe('light');
   });
 
   it('restores a valid dark preference and ignores invalid values', () => {
-    localStorage.setItem('tryedveo-theme', 'dark');
+    localStorage.setItem('tradeveo-theme', 'dark');
     const { unmount } = render(<Harness />);
     expect(screen.getByTestId('theme')).toHaveTextContent('dark');
     expect(screen.getByRole('button', { name: 'Switch to light theme' })).toHaveAttribute('aria-pressed', 'true');
     unmount();
-    localStorage.setItem('tryedveo-theme', 'sepia');
+    localStorage.setItem('tradeveo-theme', 'sepia');
     render(<Harness />);
     expect(screen.getByTestId('theme')).toHaveTextContent('light');
   });

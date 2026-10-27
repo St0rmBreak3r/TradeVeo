@@ -12,7 +12,7 @@ if not exist .venv\Scripts\python.exe (
   pause
   exit /b 1
 )
-start "TRYEDVEO API" cmd /k "cd /d "%~dp0" && .venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8010 --reload"
-start "TRYEDVEO UI" cmd /k "cd /d "%~dp0" && npm run dev"
-echo TRYEDVEO is starting. Open http://127.0.0.1:5173 after both windows are ready.
+start "Tradeveo API" cmd /k "cd /d "%~dp0" && .venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8010 --reload"
+start "Tradeveo UI" cmd /k "cd /d "%~dp0" && npm run dev"
+echo Tradeveo is starting. Open http://127.0.0.1:5173 after both windows are ready.
 endlocal

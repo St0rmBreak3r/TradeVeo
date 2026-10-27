@@ -12,11 +12,11 @@ vi.mock('./api/client', () => ({
 
 afterEach(() => { cleanup(); vi.clearAllMocks(); window.history.replaceState({}, '', '/'); });
 
-describe('TradeVeo chart desk', () => {
+describe('Tradeveo chart desk', () => {
   it('opens on chart analysis and hides the journal pages', async () => {
     render(<App />);
     expect(await screen.findByRole('heading', { name: /one screenshot/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /TradeVeo/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Tradeveo/ })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Overview' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Journal' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Analytics' })).not.toBeInTheDocument();

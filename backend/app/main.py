@@ -246,7 +246,7 @@ def create_app(database_url: str | None = None) -> FastAPI:
         yield
         engine.dispose()
 
-    app = FastAPI(title="TradeVeo", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="Tradeveo", version="0.1.0", lifespan=lifespan)
     app.state.database_url = url
     app.state.allowed_origin = configured_origin
     app.state.local_origins = local_origins
@@ -357,7 +357,7 @@ def create_app(database_url: str | None = None) -> FastAPI:
         rows = session.scalars(_filtered_statement(search=search, instrument=instrument, market=market,
             direction=direction, strategy=strategy, from_=from_, to=to, status=status, currency=currency)).all()
         content = export_trades([_trade_read(row) for row in rows])
-        return Response(content=content, media_type="text/csv; charset=utf-8", headers={"Content-Disposition": "attachment; filename=tryedveo-trades.csv"})
+        return Response(content=content, media_type="text/csv; charset=utf-8", headers={"Content-Disposition": "attachment; filename=tradeveo-trades.csv"})
 
     @app.post("/api/import/preview")
     async def import_preview(request: Request, file: UploadFile = File(...)):

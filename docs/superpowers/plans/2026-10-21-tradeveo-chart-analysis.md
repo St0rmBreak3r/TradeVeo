@@ -1,16 +1,16 @@
-# TRYEDVEO Chart-First Screenshot Analysis Implementation Plan
+# Tradeveo Chart-First Screenshot Analysis Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make screenshot-driven, structured chart analysis TRYEDVEO's primary user journey using an explicitly invoked hosted OpenAI vision request, without deleting existing journal data.
+**Goal:** Make screenshot-driven, structured chart analysis Tradeveo's primary user journey using an explicitly invoked hosted OpenAI vision request, without deleting existing journal data.
 
-**Architecture:** React accepts PNG/JPEG screenshots by paste, drop, or file picker and renders a local preview; only after explicit user action and disclosure does it upload to a same-origin FastAPI endpoint. The backend validates and bounds image input, uses a provider adapter to call OpenAI's Responses API with an in-memory Base64 image and schema-constrained output, validates the result, and returns it without storing it. API keys come from a verified Windows Credential Manager backend or explicitly configured environment variable; no key or chart is persisted by TRYEDVEO.
+**Architecture:** React accepts PNG/JPEG screenshots by paste, drop, or file picker and renders a local preview; only after explicit user action and disclosure does it upload to a same-origin FastAPI endpoint. The backend validates and bounds image input, uses a provider adapter to call OpenAI's Responses API with an in-memory Base64 image and schema-constrained output, validates the result, and returns it without storing it. API keys come from a verified Windows Credential Manager backend or explicitly configured environment variable; no key or chart is persisted by Tradeveo.
 
 **Tech Stack:** Existing React 19 + TypeScript + Vite; FastAPI + Pydantic v2; OpenAI Python SDK (async client); Pillow for safe image decode/dimension checks; `keyring` only if its actual Windows backend can be verified; pytest/FastAPI TestClient; Vitest/Testing Library; existing Playwright for real browser tests. Pin dependencies through `pyproject.toml` and lock files only after checking compatible current versions and official API/model support.
 
 ## Global Constraints
 
-- Product name remains `TRYEDVEO`.
+- Product name remains `Tradeveo`.
 - The primary home route `/` is chart analysis; journal stays secondary and existing records must not be deleted or migrated destructively.
 - Accept one PNG/JPEG image, maximum 10 MiB, plus configured pixel/dimension bounds; do not save chart data to the journal DB, backups, local storage, IndexedDB, logs, or disk temp files.
 - A user must explicitly consent to send the image to OpenAI and press Analyze; no network request before that action.
@@ -54,9 +54,9 @@ frontend/src/
   pages/SettingsPage.test.tsx            Secret-free settings tests
 
 docs/
-  superpowers/specs/2026-10-21-tryedveo-chart-analysis-design.md
-  superpowers/plans/2026-10-21-tryedveo-chart-analysis.md
-  uat/2026-10-21-tryedveo-uat-report.md   Update with chart-pivot UAT at completion
+  superpowers/specs/2026-10-21-tradeveo-chart-analysis-design.md
+  superpowers/plans/2026-10-21-tradeveo-chart-analysis.md
+  uat/2026-10-21-tradeveo-uat-report.md   Update with chart-pivot UAT at completion
 README.md                                  Correct product-first description and privacy/setup docs
 pyproject.toml                             Add pinned-compatible backend dependencies
 package-lock.json                           Preserve existing frontend dependency lock
@@ -162,13 +162,13 @@ Adapter requirements: use official OpenAI Python async client; HTTPS default end
 
 ## Task 7: Browser UAT and final report
 
-**Files:** Update `docs/uat/2026-10-21-tryedveo-uat-report.md`; use existing browser/e2e tooling without storing real private chart images as fixtures.
+**Files:** Update `docs/uat/2026-10-21-tradeveo-uat-report.md`; use existing browser/e2e tooling without storing real private chart images as fixtures.
 
 - [ ] **Step 1: Verify server processes and ports** before using browser; reuse healthy local app and do not stop unrelated processes.
 - [ ] **Step 2: Mock-provider UAT:** open chart-first home; test file picker, paste, preview, consent disclosure, explicit Analyze; capture the mocked structured result; test NO_TRADE and provider failure; test clear/replace and keyboard route. Confirm no provider network call occurs pre-consent.
 - [ ] **Step 3: Backend data-boundary UAT:** verify image absent from DB, app files, backups, logs, and browser persistent storage; verify request limits and secret redaction.
 - [ ] **Step 4: Settings UAT:** environment-key status without value; Credential Manager save/clear only on a verified supported Windows runtime. In environments without verified Windows Credential Manager, report this capability blocked, never use plaintext fallback.
-- [ ] **Step 5: Optional real-provider UAT:** only if user has configured a valid OpenAI key through TRYEDVEO Settings or process environment and is actively supplying a screenshot. Reconfirm outbound image disclosure. Do not ask user to paste key into chat. Record model/provider outcome, not the sensitive image.
+- [ ] **Step 5: Optional real-provider UAT:** only if user has configured a valid OpenAI key through Tradeveo Settings or process environment and is actively supplying a screenshot. Reconfirm outbound image disclosure. Do not ask user to paste key into chat. Record model/provider outcome, not the sensitive image.
 - [ ] **Step 6: Regression checks:** `python -m pytest -q`; `npm run typecheck`; `npm test -- --run`; `npm run build`; browser console/network; desktop and 375px viewport; journal routes and existing records remain intact.
 - [ ] **Step 7: Update report** to distinguish mocked success from live-provider result, list any checks blocked by credentials/OS environment, and state plainly whether the system now serves the chart-signal purpose.
 

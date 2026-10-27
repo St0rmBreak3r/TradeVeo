@@ -52,7 +52,7 @@ def test_summary_uses_exact_decimal_and_separate_currencies(tmp_path):
 
 
 def test_calendar_groups_by_local_date_and_currency(tmp_path, monkeypatch):
-    monkeypatch.setenv("TRYEDVEO_TIMEZONE", "America/New_York")
+    monkeypatch.setenv("TRADEVEO_TIMEZONE", "America/New_York")
     client = TestClient(create_app(database_url=f"sqlite:///{tmp_path / 'journal.sqlite3'}"))
     with client:
         for item in [

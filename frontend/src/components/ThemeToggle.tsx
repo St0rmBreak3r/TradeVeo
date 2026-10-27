@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
 export type Theme = 'light' | 'dark';
-export const THEME_STORAGE_KEY = 'tryedveo-theme';
+export const THEME_STORAGE_KEY = 'tradeveo-theme';
 
 function readTheme(): Theme {
   try {

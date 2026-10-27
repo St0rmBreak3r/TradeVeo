@@ -1,1 +1,1 @@
-"""Business logic for TRYEDVEO."""
+"""Business logic for Tradeveo."""
